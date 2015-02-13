@@ -39,15 +39,18 @@ byte_t& ByteSequence::operator[] (int i)
 	return m_storage[i];
 }
 
+
+// if right operand is shorter than left operand, this is going to 
+// use reapeating-key XOR
 ByteSequence ByteSequence::operator^ (const ByteSequence &seq) const
 {
-	assert(seq.size() == this->size());
+	assert(seq.size() <= this->size());
 	
-	int size = seq.size();
-	ByteSequence new_seq(size);
-	for (int i = size - 1; i >= 0; --i)
+	int seq_size = seq.size();
+	ByteSequence new_seq(this->size());
+	for (int i = this->size() - 1; i >= 0; --i)
 	{
-		new_seq[i] = (*this)[i] ^ seq[i];
+		new_seq[i] = (*this)[i] ^ seq[i % seq_size];
 	}
 	
 	return new_seq;
@@ -93,6 +96,15 @@ ByteSequence& ByteSequence::from_base64_string(std::string)
 {
 	// TODO:
 	return ByteSequence(0);
+}
+
+ByteSequence ByteSequence::from_plain_text_string(std::string str)
+{
+	ByteSequence seq;
+
+	seq.m_storage = vector<byte_t>(str.begin(), str.end());
+
+	return seq;
 }
 
 std::string ByteSequence::to_base64_string()

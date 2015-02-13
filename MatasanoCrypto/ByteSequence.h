@@ -19,6 +19,7 @@ public:
 
 	static ByteSequence from_hex_string(std::string);
 	static ByteSequence& from_base64_string(std::string);
+	static ByteSequence from_plain_text_string(std::string);
 
 	std::string to_hex_string();
 	std::string to_base64_string();
